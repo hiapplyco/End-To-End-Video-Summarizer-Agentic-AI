@@ -5,7 +5,6 @@ from phi.tools.duckduckgo import DuckDuckGo
 import google.generativeai as genai
 from google.generativeai import upload_file, get_file
 from elevenlabs.client import ElevenLabs
-from elevenlabs.api.error import UnauthenticatedRateLimitError, RateLimitError
 
 import time
 import os
