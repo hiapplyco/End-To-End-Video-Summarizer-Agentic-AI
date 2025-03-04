@@ -210,7 +210,7 @@ One key conceptual understanding that would elevate their game
 ## STUDENT TAKEAWAY
 A memorable principle they should internalize (think: "Position before submission")
 
-Use precise BJJ terminology while remaining accessible. Balance encouragement with honest technical assessment. Keep your analysis under 400 words total.
+Use precise BJJ terminology while remaining accessible. Balance encouragement with honest technical assessment. Keep your analysis under 1000 words total.
 """
                     progress_bar.progress(80, text="Finalizing insights...")
                     response = multimodal_Agent.run(analysis_prompt, videos=[processed_video])
