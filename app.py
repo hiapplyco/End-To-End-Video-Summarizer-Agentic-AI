@@ -179,7 +179,7 @@ if video_file:
 
 Your analysis should be structured with the precision and depth of a world champion's mind, yet delivered with the clarity to resonate with any dedicated student.
 
-Begin by immediately identifying the practitioner's current skill level – from white belt fundamentals to black belt intricacies. Be direct and insightful in your assessment.
+Begin by immediately identifying the practitioner's skill level – from white belt fundamentals to black belt intricacies. Be direct and insightful in your assessment.
 
 Structure your feedback rigorously, as follows:
 
@@ -217,84 +217,85 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
                     st.session_state.audio_generated = False
                     st.session_state.show_audio_options = False
 
-                st.markdown('<div class="analysis-section">', unsafe_allow_html=True)
-                st.subheader("Expert BJJ Analysis")
-                st.markdown(st.session_state.analysis_result)
-                st.markdown('</div>', unsafe_allow_html=True)
-
-                st.download_button(
-                    label="Download Analysis", # Clearer label
-                    data=st.session_state.analysis_result,
-                    file_name="bjj_technique_analysis.md",
-                    mime="text/markdown"
-                )
-
-                # Simplified audio options - always show button, expander optional
-                                # Simplified audio options - always show button, expander optional
-                if st.button("Listen to Analysis (Audio Options)"): # More informative button
-                    st.write("Listen to Analysis button clicked!") # DEBUG LINE
-                    st.session_state.show_audio_options = True
-
-                if st.session_state.show_audio_options:
-                    st.write("show_audio_options is True, showing expander") # DEBUG LINE
-                    with st.expander("Audio Voice Settings", expanded=True): # Clearer expander title
-                        st.subheader("Voice Options")
-
-                        elevenlabs_api_key = API_KEY_ELEVENLABS
-                        selected_voice_id = "21m00Tcm4TlvDq8ikWAM"  # Default voice ID
-                        if elevenlabs_api_key:
-                            try:
-                                st.write("ElevenLabs API key found, trying to get voices") # DEBUG LINE
-                                client = ElevenLabs(api_key=elevenlabs_api_key)
-                                voice_data = client.voices.get_all()
-                                voices_list = [v.name for v in voice_data.voices]
-                                selected_voice_name = st.selectbox("Choose Voice", options=voices_list, index=0)
-                                selected_voice_id = next((v.voice_id for v in voice_data.voices if v.name == selected_voice_name), None)
-                                if not selected_voice_id:
-                                    st.warning("Voice selection issue. Using default voice.")
-                                    selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
-                            except Exception as e:
-                                st.warning(f"Could not retrieve voices: {e}. Using default voice.") # Include error in warning
-                                selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
-                        else:
-                            st.error("ElevenLabs API key missing.")
-
-                        if st.button("Generate Audio Analysis"): # Clear CTA for audio generation
-                            st.write("Generate Audio Analysis button clicked!") # DEBUG LINE
-                            if elevenlabs_api_key:
-                                try:
-                                    with st.spinner("Generating audio..."):
-                                        st.write("Generating audio with ElevenLabs...") # DEBUG LINE
-                                        clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
-                                        client = ElevenLabs(api_key=elevenlabs_api_key)
-                                        audio = client.text_to_speech.convert(
-                                            text=clean_text,
-                                            voice_id=selected_voice_id,
-                                            model_id="eleven_multilingual_v2"
-                                        )
-                                        st.session_state.audio = audio
-                                        st.session_state.audio_generated = True
-
-                                        st.audio(audio, format="audio/mp3")
-                                        st.download_button(
-                                            label="Download Audio Analysis", # Clearer label
-                                            data=audio,
-                                            file_name="bjj_analysis_audio.mp3",
-                                            mime="audio/mp3"
-                                        )
-                                        st.write("Audio generation successful and displayed!") # DEBUG LINE
-                                except Exception as e:
-                                    st.error(f"Audio generation error: {str(e)}") # Include error in error message
-                                    st.write(f"ElevenLabs Error Details: {e}") # More detailed error for debugging
-                            else:
-                                st.error("ElevenLabs API key needed for audio.")
-
-
             except Exception as error:
                 st.error(f"Analysis error: {error}")
                 st.info("Try a shorter video or check your connection.")
             finally:
                 Path(video_path).unlink(missing_ok=True)
+
+    # Analysis Section - Displayed regardless of audio options
+    if st.session_state.analysis_result:
+        st.markdown('<div class="analysis-section">', unsafe_allow_html=True)
+        st.subheader("Expert BJJ Analysis")
+        st.markdown(st.session_state.analysis_result)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        st.download_button(
+            label="Download Analysis", # Clearer label
+            data=st.session_state.analysis_result,
+            file_name="bjj_technique_analysis.md",
+            mime="text/markdown"
+        )
+
+        # Audio Options Section - Now consistently below analysis
+        if st.button("Listen to Analysis (Audio Options)"): # More informative button
+            st.write("Listen to Analysis button clicked!") # DEBUG LINE
+            st.session_state.show_audio_options = True
+
+        if st.session_state.show_audio_options:
+            st.write("show_audio_options is True, showing expander") # DEBUG LINE
+            with st.expander("Audio Voice Settings", expanded=True): # Clearer expander title
+                st.subheader("Voice Options")
+
+                elevenlabs_api_key = API_KEY_ELEVENLABS
+                selected_voice_id = "21m00Tcm4TlvDq8ikWAM"  # Default voice ID
+                if elevenlabs_api_key:
+                    try:
+                        st.write("ElevenLabs API key found, trying to get voices") # DEBUG LINE
+                        client = ElevenLabs(api_key=elevenlabs_api_key)
+                        voice_data = client.voices.get_all()
+                        voices_list = [v.name for v in voice_data.voices]
+                        selected_voice_name = st.selectbox("Choose Voice", options=voices_list, index=0)
+                        selected_voice_id = next((v.voice_id for v in voice_data.voices if v.name == selected_voice_name), None)
+                        if not selected_voice_id:
+                            st.warning("Voice selection issue. Using default voice.")
+                            selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
+                    except Exception as e:
+                        st.warning(f"Could not retrieve voices: {e}. Using default voice.") # Include error in warning
+                        selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
+                else:
+                    st.error("ElevenLabs API key missing.")
+
+                if st.button("Generate Audio Analysis"): # Clear CTA for audio generation
+                    st.write("Generate Audio Analysis button clicked!") # DEBUG LINE
+                    if elevenlabs_api_key:
+                        try:
+                            with st.spinner("Generating audio..."):
+                                st.write("Generating audio with ElevenLabs...") # DEBUG LINE
+                                clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
+                                client = ElevenLabs(api_key=elevenlabs_api_key)
+                                audio = client.text_to_speech.convert(
+                                    text=clean_text,
+                                    voice_id=selected_voice_id,
+                                    model_id="eleven_multilingual_v2"
+                                )
+                                st.session_state.audio = audio
+                                st.session_state.audio_generated = True
+
+                                st.audio(st.session_state.audio, format="audio/mp3") # Use st.session_state.audio to play
+                                st.download_button(
+                                    label="Download Audio Analysis", # Clearer label
+                                    data=st.session_state.audio, # Use st.session_state.audio for download
+                                    file_name="bjj_analysis_audio.mp3",
+                                    mime="audio/mp3"
+                                )
+                                st.write("Audio generation successful and displayed!") # DEBUG LINE
+                        except Exception as e:
+                            st.error(f"Audio generation error: {str(e)}") # Include error in error message
+                            st.write(f"ElevenLabs Error Details: {e}") # More detailed error for debugging
+                    else:
+                        st.error("ElevenLabs API key needed for audio.")
+
 else:
     st.write("""
     Welcome! Studio 540 provides AI-powered analysis of your BJJ techniques.
