@@ -29,7 +29,6 @@ def show_toast(message, duration=3000):
     </script>
     """, unsafe_allow_html=True)
 
-
 API_KEY = st.secrets["google"]["api_key"]
 if API_KEY:
     genai.configure(api_key=API_KEY)
@@ -45,6 +44,7 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+    /* Base header styling */
     .main-header {
         font-family: 'Helvetica Neue', sans-serif;
         color: #2C3E50;
@@ -57,9 +57,10 @@ st.markdown("""
         margin-bottom: 30px;
         text-align: center;
     }
-    /* Constrain widths for consistency */
-    .stTextArea textarea, .stButton button, .stFileUploader {
+    /* Inputs and buttons: default max width and centering */
+    .stTextArea textarea, .stButton button, .stFileUploader, video {
         max-width: 480px;
+        width: 100%;
         margin: 0 auto;
     }
     .stTextArea textarea {
@@ -74,8 +75,6 @@ st.markdown("""
         border-radius: 6px;
         padding: 10px 24px;
         transition: all 0.3s ease;
-        width: 100%;
-        max-width: 480px;
     }
     .stButton button:hover {
         background-color: #2980B9;
@@ -88,11 +87,16 @@ st.markdown("""
         border-left: 5px solid #3498DB;
         margin-top: 20px;
     }
-    /* Limit video preview width */
-    video {
-        max-width: 480px;
-        display: block;
-        margin: 0 auto;
+    /* Responsive design: adjust for screens narrower than 768px */
+    @media screen and (max-width: 768px) {
+        .stTextArea textarea, .stButton button, .stFileUploader, video {
+            max-width: 100% !important;
+        }
+        /* Force columns to stack vertically on mobile */
+        [data-testid="column"] {
+            flex: 0 0 100% !important;
+            max-width: 100% !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -139,15 +143,12 @@ with col1:
     )
 
 if video_file:
-    # Create a temporary file for the uploaded video
     with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video:
         temp_video.write(video_file.read())
         video_path = temp_video.name
     
-    # Display the video preview (sized via CSS)
     st.video(video_path, format="video/mp4", start_time=0)
     
-    # Query input and analyze button (side-by-side)
     query_col1, query_col2 = st.columns([3, 1])
     with query_col1:
         user_query = st.text_area(
@@ -156,10 +157,9 @@ if video_file:
             help="Be specific about what aspects you want feedback on."
         )
     with query_col2:
-        st.markdown("<br>", unsafe_allow_html=True)  # Spacing
+        st.markdown("<br>", unsafe_allow_html=True)
         analyze_button = st.button("🔍 Analyze Technique", key="analyze_video_button", use_container_width=True)
     
-    # Processing logic when the button is clicked
     if analyze_button:
         if not user_query:
             st.warning("⚠️ Please enter a question or insight to analyze the video.")
@@ -167,7 +167,6 @@ if video_file:
             try:
                 with st.spinner("🔄 Processing video and generating expert BJJ feedback..."):
                     progress_bar = st.progress(0)
-                    
                     progress_bar.progress(10, text="Uploading video...")
                     processed_video = upload_file(video_path)
                     
@@ -181,7 +180,6 @@ if video_file:
                     
                     progress_bar.progress(60, text="Generating analysis...")
                     
-                    # Construct enhanced prompt for detailed BJJ analysis
                     analysis_prompt = f"""You are Professor Garcia, an IBJJF Hall of Fame BJJ coach with extensive competition and teaching experience. Analyze this BJJ video and address: {user_query}
 
 First, determine the practitioner's skill level (beginner, intermediate, advanced, elite) based on movement fluidity, technical precision, and conceptual understanding.
@@ -217,14 +215,12 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                     progress_bar.progress(100, text="Complete!")
                     time.sleep(0.5)
                     progress_bar.empty()
-
-                # Display analysis result
+                
                 st.markdown('<div class="analysis-section">', unsafe_allow_html=True)
                 st.subheader("📋 Expert BJJ Analysis")
                 st.markdown(response.content)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Feedback and download options
                 feedback_col1, feedback_col2 = st.columns(2)
                 with feedback_col1:
                     st.download_button(
@@ -240,7 +236,6 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                 st.error(f"An error occurred during analysis: {error}")
                 st.info("Try uploading a shorter video or check your internet connection.")
             finally:
-                # Clean up the temporary video file
                 Path(video_path).unlink(missing_ok=True)
 else:
     st.info("📤 Upload a BJJ video to receive expert analysis and personalized feedback.")
