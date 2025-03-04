@@ -293,7 +293,7 @@ else:
     Upload a video to get started.
     """)
     st.info("🥋 Upload a BJJ video above to receive expert AI analysis and personalized feedback.") # Info message as CTA
-        st.subheader("Get the Best Analysis") # Tips section
+    st.subheader("Get the Best Analysis") # Tips section
     with st.expander("Tips for Video Analysis"):
         st.markdown("""
         1. **Video Quality**: Good lighting, clear technique view.
