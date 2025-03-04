@@ -12,6 +12,13 @@ import tempfile
 from pathlib import Path
 import base64
 
+# Set page configuration as the first Streamlit command
+st.set_page_config(
+    page_title="Studio 540 - BJJ Video Analyzer",
+    page_icon="🥋",
+    layout="wide"
+)
+
 # ------------------------------
 # Utility Functions for Background
 # ------------------------------
@@ -67,15 +74,6 @@ if API_KEY_GOOGLE:
 else:
     st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
     st.stop()
-
-# ------------------------------
-# Basic page configuration
-# ------------------------------
-st.set_page_config(
-    page_title="Studio 540 - BJJ Video Analyzer",
-    page_icon="🥋",
-    layout="wide"
-)
 
 # ------------------------------
 # Basic CSS styling and responsive layout
@@ -337,7 +335,6 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                                     )
                                     st.session_state.audio = audio
                                     st.session_state.audio_generated = True
-                                    # Immediately display the audio player without rerun
                                     st.audio(st.session_state.audio, format="audio/mp3")
                             except UnauthenticatedRateLimitError:
                                 st.error("API rate limit exceeded. Please provide a valid ElevenLabs API key.")
@@ -347,6 +344,7 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                                 st.error(f"Error generating audio: {str(e)}")
                         else:
                             st.error("ElevenLabs API key is required for text-to-speech. Please enter it in the sidebar.")
+                    
             except Exception as error:
                 st.error(f"An error occurred during analysis: {error}")
                 st.info("Try uploading a shorter video or check your internet connection.")
