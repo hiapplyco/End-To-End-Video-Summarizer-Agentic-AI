@@ -31,129 +31,153 @@ def set_background(png_file):
     bin_str = get_base64_of_bin_file(png_file)
     page_bg_img = '''
     <style>
-    /* Full background image */
+    /* Color Variables */
+    :root {
+        --gi-blue: #1a365d;         /* Deep blue inspired by BJJ gi */
+        --mat-red: #c53030;         /* Red accent inspired by BJJ mats */
+        --belt-gold: #d69e2e;       /* Gold accent inspired by belt stripes */
+        --off-white: #f7fafc;       /* Clean background color */
+        --dark-text: #2d3748;       /* Primary text color */
+        --light-text: #f7fafc;      /* Text for dark backgrounds */
+        --shadow: rgba(0, 0, 0, 0.15); /* Standard shadow */
+    }
+    
+    /* Full background image with overlay */
     .stApp {
-        background-image: url("data:image/png;base64,%s");
+        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("data:image/png;base64,%s");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+        color: var(--dark-text) !important;
     }
     
-    /* Remove those strange lines at the top */
+    /* Remove default headers */
     header {
         display: none !important;
     }
     
-    /* Main layout container - add proper spacing */
+    /* Main container styling */
     .main .block-container {
-        padding-top: 2rem;
-        padding-bottom: 3rem;
-        max-width: 1000px;
+        padding: 2rem 1rem;
+        max-width: 1100px;
         margin: 0 auto;
     }
     
-    /* Section styling */
-    .stMarkdown {
-        margin-bottom: 1.5rem !important;
-    }
-    
-    /* Headers with dark background and proper padding */
+    /* Headers - Blue background with white text */
     h1, h2, h3 {
-        background-color: rgba(43, 43, 43, 0.9);
-        color: white !important;
+        background-color: var(--gi-blue);
+        color: var(--light-text) !important;
         padding: 1rem 1.5rem !important;
         border-radius: 8px !important;
         margin-bottom: 1.5rem !important;
         font-weight: 600 !important;
-        line-height: 1.4 !important;
+        box-shadow: 0 4px 6px var(--shadow);
     }
     
-    /* Paragraph text */
+    /* Paragraphs - White background with dark text */
     p {
-        background-color: rgba(255, 255, 255, 0.85);
+        background-color: var(--off-white);
+        color: var(--dark-text) !important;
         padding: 1rem !important;
         border-radius: 8px !important;
         margin-bottom: 1rem !important;
-        line-height: 1.6 !important;
+        box-shadow: 0 2px 4px var(--shadow);
     }
     
-    /* Button styling */
+    /* Primary buttons - Red with white text */
     .stButton button {
-        background-color: #3498DB !important;
-        color: white !important;
+        background-color: var(--mat-red) !important;
+        color: var(--light-text) !important;
         font-weight: 600 !important;
         border: none !important;
         padding: 0.75rem 1.5rem !important;
         border-radius: 8px !important;
         transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px var(--shadow) !important;
     }
     .stButton button:hover {
-        background-color: #2980B9 !important;
+        background-color: #b52a2a !important; /* Darker red on hover */
         transform: translateY(-2px) !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 4px 8px var(--shadow) !important;
     }
     
-    /* File uploader styling */
+    /* File uploader - Styled with gold accent */
     [data-testid="stFileUploader"] {
-        background-color: rgba(255, 255, 255, 0.9) !important;
+        background-color: var(--off-white) !important;
         padding: 2rem !important;
         border-radius: 10px !important;
         margin-bottom: 2rem !important;
-        border: 2px dashed #3498DB !important;
+        border: 2px dashed var(--belt-gold) !important;
+        box-shadow: 0 4px 6px var(--shadow) !important;
     }
     
-    /* Text input and text areas */
+    /* Text inputs */
     .stTextInput input, .stTextArea textarea {
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border: 1px solid #ccc !important;
+        background-color: var(--off-white) !important;
+        color: var(--dark-text) !important;
+        border: 1px solid #e2e8f0 !important;
         padding: 0.75rem 1rem !important;
         border-radius: 8px !important;
     }
     
     /* Sidebar styling */
     [data-testid="stSidebar"] {
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        padding: 2rem 1rem !important;
+        background-color: var(--gi-blue) !important;
+        color: var(--light-text) !important;
     }
-    [data-testid="stSidebar"] h1 {
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
         background: none !important;
-        color: #333 !important;
-        padding: 0 !important;
+        color: var(--light-text) !important;
+        padding: 0.5rem 0 !important;
+        box-shadow: none !important;
     }
-    [data-testid="stSidebar"] img {
-        margin-bottom: 1rem !important;
+    [data-testid="stSidebar"] p {
+        background: none !important;
+        color: var(--light-text) !important;
+        padding: 0.25rem 0 !important;
+        box-shadow: none !important;
     }
     
-    /* Testimonial boxes */
+    /* Sidebar expandable sections */
+    [data-testid="stSidebar"] .streamlit-expanderHeader {
+        color: var(--light-text) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 8px !important;
+    }
+    [data-testid="stSidebar"] .streamlit-expanderContent {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        color: var(--light-text) !important;
+        border-radius: 0 0 8px 8px !important;
+    }
+    
+    /* Testimonial boxes - White with blue accent */
     .testimonial {
-        background-color: rgba(255, 255, 255, 0.9) !important;
-        border-left: 5px solid #3498DB !important;
+        background-color: var(--off-white) !important;
+        border-left: 5px solid var(--gi-blue) !important;
         padding: 1.5rem !important;
         border-radius: 8px !important;
         margin-bottom: 1.5rem !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 4px 12px var(--shadow) !important;
+        color: var(--dark-text) !important;
     }
     
-    /* Analysis section */
+    /* Analysis section - White with gold accent */
     .analysis-section {
-        background-color: rgba(255, 255, 255, 0.9) !important;
+        background-color: var(--off-white) !important;
+        border-left: 5px solid var(--belt-gold) !important;
         border-radius: 10px !important;
         padding: 2rem !important;
         margin-top: 2rem !important;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: 0 6px 18px var(--shadow) !important;
+        color: var(--dark-text) !important;
     }
     
     /* Expander styling */
     .stExpander {
-        background-color: rgba(255, 255, 255, 0.9) !important;
+        background-color: var(--off-white) !important;
         border-radius: 8px !important;
         margin-bottom: 1.5rem !important;
-    }
-    .stExpander > div:first-child {
-        padding: 1rem !important;
-    }
-    .stExpander > div:last-child {
-        padding: 0 1rem 1rem 1rem !important;
+        box-shadow: 0 2px 4px var(--shadow) !important;
     }
     
     /* Video container */
@@ -161,23 +185,25 @@ def set_background(png_file):
         border-radius: 8px !important;
         overflow: hidden !important;
         margin: 1.5rem 0 !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 4px 12px var(--shadow) !important;
+        border: 3px solid var(--gi-blue) !important;
     }
     
-    /* Progress bar */
+    /* Progress bar - Red with animation */
     .stProgress > div > div {
-        background-color: #3498DB !important;
+        background-color: var(--mat-red) !important;
     }
     
     /* Audio player */
     .stAudio {
-        background-color: rgba(255, 255, 255, 0.9) !important;
+        background-color: var(--off-white) !important;
         padding: 1rem !important;
         border-radius: 8px !important;
         margin-top: 1.5rem !important;
+        box-shadow: 0 2px 4px var(--shadow) !important;
     }
     
-    /* Make columns have proper spacing */
+    /* Column spacing */
     [data-testid="column"] {
         padding: 0.5rem !important;
     }
@@ -185,7 +211,20 @@ def set_background(png_file):
     /* Custom separator */
     hr {
         margin: 2rem 0 !important;
-        border-color: rgba(52, 152, 219, 0.3) !important;
+        border-color: var(--belt-gold) !important;
+    }
+    
+    /* Ensure all text in the main content area is visible */
+    .main {
+        color: var(--dark-text) !important;
+    }
+    .main div, .main span, .main p, .main label {
+        color: var(--dark-text) !important;
+    }
+    
+    /* Give some spacing to the logo */
+    img {
+        margin: 1rem 0 !important;
     }
     </style>
     ''' % bin_str
