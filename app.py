@@ -91,7 +91,7 @@ with st.sidebar:
     - Coaching insights
     
     **Models:**
-    - Gemini 2.0 Flash Exp for video analysis
+    - Gemini 2.0 Flash for video analysis
     """)
     
     st.divider()
@@ -103,7 +103,7 @@ def initialize_agent():
     """Initialize and cache the Phi Agent with Gemini model."""
     return Agent(
         name="BJJ Video Analyzer",
-        model=Gemini(id="gemini-2.0-flash-exp"),
+        model=Gemini(id="gemini-2.0-flash"),
         tools=[DuckDuckGo()],
         markdown=True,
     )
