@@ -1,38 +1,32 @@
-# Streamlit and UI
+# Core dependencies
 streamlit
 pillow
-
-# Phi Agent and Google AI
-phi-client
-phidata
-google-generativeai
-duckduckgo-search
-
-# Text-to-speech
-elevenlabs
-
-# Data processing
 numpy
 pandas
 requests
 python-dotenv
 
-# PDF processing
-pypdf
+# Google AI
+google-generativeai
 
-# Database (if needed)
+# Use the correct phi package name
+phi
+phidata
+
+# Text-to-speech
+elevenlabs
+
+# Search capability
+duckduckgo-search
+
+# Additional utilities (if needed)
+packaging
+fastapi
+uvicorn
+groq
+openai
 sqlalchemy
 pgvector
 psycopg[binary]
-
-# API (if needed)
-fastapi
-uvicorn
-
-# Additional LLM APIs (if needed)
-groq
-openai
-
-# Finance data (if needed)
+pypdf
 yfinance
-packaging
