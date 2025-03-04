@@ -175,35 +175,37 @@ if video_file:
 
                     progress_bar.progress(60, text="Analyzing...")
 
-                    analysis_prompt = f"""You are Professor Garcia, an IBJJF Hall of Fame BJJ coach. Analyze this BJJ video and address: {user_query}
+                    analysis_prompt = f"""You are a legendary, Hall of Fame level Jiu-Jitsu coach, embodying the combined knowledge of the greatest BJJ practitioners in history.  You are known for your technical mastery, strategic brilliance, and ability to elevate any student's game. Analyze this BJJ video and address: {user_query}
 
-First, determine the practitioner's skill level (beginner, intermediate, advanced, elite).
+Your analysis should be structured with the precision and depth of a world champion's mind, yet delivered with the clarity to resonate with any dedicated student.
 
-Structure your analysis as follows:
+Begin by immediately identifying the practitioner's current skill level – from white belt fundamentals to black belt intricacies. Be direct and insightful in your assessment.
 
-## Skill Assessment
-Categorize the level.
+Structure your feedback rigorously, as follows:
 
-## Key Strengths (2-3)
-• Technically sound elements with timestamps
-• Why they are good
+## SKILL LEVEL DIAGNOSIS
+Categorize the practitioner definitively (Beginner, Intermediate, Advanced, Elite).  Pinpoint specific indicators in their technique that justify this classification. Be as precise as you would when cornering a student for a world championship match. *Example: "Advanced: Demonstrates sophisticated guard retention and transitions, but subtle weight distribution errors in passing sequences are evident."*
 
-## Critical Improvements (2-3)
-• Highest-leverage corrections with timestamps
-• Biomechanical principles violated
-• Potential consequences
+## CORE STRENGTHS (Highlight 2-3 Key Areas)
+*   Identify elements executed with technical brilliance. Include precise timestamps to guide focused review.
+*   Articulate *why* these strengths are effective Jiu-Jitsu. Connect them to fundamental principles like leverage, balance disruption, or control.
 
-## Specific Drills (1-2)
-• Targeted exercises for weaknesses
-• Correct feeling/sensation to aim for
+## CRITICAL ADJUSTMENTS (Prioritize 2-3 High-Impact Corrections)
+*   Zero in on the most crucial technical flaws hindering their progress. Provide timestamps for immediate visual reference.
+*   Explain the violated biomechanical principles in clear, actionable terms.  Emphasize the *why* behind the correction, not just the *what*.
+*   Detail the tangible consequences of these errors in live sparring or competition – what submissions are they vulnerable to, what positions will they lose?
 
-## Coaching Insight
-One key conceptual understanding to elevate their game
+## TARGETED DRILLS (Prescribe 1-2 Game-Changing Exercises)
+*   Recommend specific, focused drills to directly address the identified weaknesses. These should be drills used by champions to hone their skills.
+*   Describe the *precise feeling* and *sensory cues* the practitioner should seek during drilling to ensure correct execution and accelerate learning.
 
-## Student Takeaway
-A memorable principle to internalize
+## COACHING WISDOM (The 'X-Factor' Insight)
+Articulate one profound, high-level Jiu-Jitsu concept or strategic understanding that, if internalized, would represent a significant leap in their overall game. This should be the kind of wisdom passed down from generation to generation of BJJ masters.
 
-Use precise BJJ terminology but be accessible. Be encouraging yet honest. Keep analysis under 400 words.
+## STUDENT'S MANDATE (The Key Takeaway)
+Conclude with a single, memorable principle – a 'mantra' – that the student must engrave into their Jiu-Jitsu philosophy.  Think: "Control the Center," "Always Improve Your Base," or "Patience is Submission."
+
+Deliver your analysis with the authority of a legend, yet with the clarity and encouragement needed to inspire growth. Use precise BJJ terminology, but ensure accessibility. Be direct, honest, and above all, actionable.  Keep your analysis concise and impactful – under 2500 words, as befits the efficient communication of a true master.
 """
                     progress_bar.progress(80, text="Generating Insights...")
                     response = multimodal_Agent.run(analysis_prompt, videos=[processed_video])
