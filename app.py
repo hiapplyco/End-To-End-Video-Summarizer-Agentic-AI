@@ -138,6 +138,38 @@ def set_background(png_file):
         box-shadow: none !important;
     }
     
+    /* FIX: Sidebar input elements */
+    [data-testid="stSidebar"] input, 
+    [data-testid="stSidebar"] textarea,
+    [data-testid="stSidebar"] .stTextInput input,
+    [data-testid="stSidebar"] .stSelectbox div,
+    [data-testid="stSidebar"] button,
+    [data-testid="stSidebar"] [data-baseweb="select"] {
+        background-color: var(--off-white) !important;
+        color: var(--dark-text) !important;
+    }
+    
+    /* FIX: Sidebar expander content and labels */
+    [data-testid="stSidebar"] label, 
+    [data-testid="stSidebar"] caption,
+    [data-testid="stSidebar"] .stMarkdown div {
+        color: var(--light-text) !important;
+    }
+    
+    /* FIX: Dropdown selection text in sidebar */
+    [data-testid="stSidebar"] [data-baseweb="select"] [data-baseweb="tag"],
+    [data-testid="stSidebar"] [data-baseweb="select"] span {
+        color: var(--dark-text) !important;
+    }
+    
+    /* FIX: Sidebar selectbox dropdown menu */
+    div[data-baseweb="popover"] div[data-baseweb="menu"] {
+        background-color: var(--off-white) !important;
+    }
+    div[data-baseweb="popover"] div[data-baseweb="menu"] li {
+        color: var(--dark-text) !important;
+    }
+    
     /* Sidebar expandable sections */
     [data-testid="stSidebar"] .streamlit-expanderHeader {
         color: var(--light-text) !important;
