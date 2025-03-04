@@ -291,6 +291,14 @@ else:
     Upload a video to get started.
     """)
     st.info("🥋 Upload a BJJ video above to receive expert AI analysis and personalized feedback.") # Info message as CTA
+        st.subheader("Get the Best Analysis") # Tips section
+    with st.expander("Tips for Video Analysis"):
+        st.markdown("""
+        1. **Video Quality**: Good lighting, clear technique view.
+        2. **Video Length**: Under 2 minutes for best results.
+        3. **Specific Questions**: Ask targeted questions.
+        4. **Multiple Angles**: Show technique from different views if possible.
+        """)
 
     st.subheader("Explore Our Martial Arts Programs") # Section header
     col1, col2, col3 = st.columns(3)
@@ -311,15 +319,6 @@ else:
         """)
 
     st.markdown("---") # Divider for visual separation
-
-    st.subheader("Get the Best Analysis") # Tips section
-    with st.expander("Tips for Video Analysis"):
-        st.markdown("""
-        1. **Video Quality**: Good lighting, clear technique view.
-        2. **Video Length**: Under 2 minutes for best results.
-        3. **Specific Questions**: Ask targeted questions.
-        4. **Multiple Angles**: Show technique from different views if possible.
-        """)
 
     st.subheader("Student Success Stories") # Testimonials section
     col1, col2 = st.columns(2)
