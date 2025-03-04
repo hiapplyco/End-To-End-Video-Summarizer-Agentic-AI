@@ -5,10 +5,11 @@ from phi.tools.duckduckgo import DuckDuckGo
 import google.generativeai as genai
 from google.generativeai import upload_file, get_file
 
-import time, os, tempfile
+import time
+import os
+import tempfile
 from pathlib import Path
 
-# --- Helper Functions ---
 def show_toast(message, duration=3000):
     """Display a toast-like notification using injected JavaScript."""
     st.markdown(f"""
@@ -28,7 +29,7 @@ def show_toast(message, duration=3000):
     </script>
     """, unsafe_allow_html=True)
 
-# --- API Key Setup ---
+
 API_KEY = st.secrets["google"]["api_key"]
 if API_KEY:
     genai.configure(api_key=API_KEY)
@@ -36,14 +37,12 @@ else:
     st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
     st.stop()
 
-# --- Page Configuration ---
 st.set_page_config(
     page_title="Multimodal AI Agent - BJJ Video Analyzer",
     page_icon="🥋",
     layout="wide"
 )
 
-# --- Custom CSS for consistent UI and video preview sizing ---
 st.markdown("""
     <style>
     .main-header {
@@ -98,11 +97,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- Application Header ---
 st.markdown('<h1 class="main-header">BJJ Video Analyzer 🥋</h1>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">Powered by Gemini 2.0 Flash</p>', unsafe_allow_html=True)
 
-# --- Sidebar Info ---
 with st.sidebar:
     st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Jiu-jitsu.svg/320px-Jiu-jitsu.svg.png", width=150)
     st.header("About This Tool")
@@ -121,20 +118,18 @@ with st.sidebar:
     st.divider()
     st.markdown("**Created by:** Apply, Co.")
 
-# --- Agent Initialization ---
 @st.cache_resource
 def initialize_agent():
     """Initialize and cache the Phi Agent with Gemini model."""
     return Agent(
         name="BJJ Video Analyzer",
-        model=Gemini(id="gemini-2.0-flash"),
+        model=Gemini(id="gemini-2.0-flash-exp"),
         tools=[DuckDuckGo()],
         markdown=True,
     )
 
 multimodal_Agent = initialize_agent()
 
-# --- Main Section: Video Uploader & Query ---
 col1, col2 = st.columns([3, 2])
 with col1:
     video_file = st.file_uploader(
