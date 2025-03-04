@@ -264,4 +264,4 @@ else:
         2. **Video Length**: Keep videos under 2 minutes for optimal analysis.
         3. **Specific Questions**: Ask targeted questions about specific aspects of the technique.
         4. **Multiple Angles**: If possible, show the technique from different angles.
-        """
+        """)
