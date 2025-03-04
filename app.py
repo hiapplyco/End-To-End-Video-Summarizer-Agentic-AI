@@ -29,8 +29,10 @@ def show_toast(message, duration=3000):
     </script>
     """, unsafe_allow_html=True)
 
+# Retrieve API key from secrets and set it as an environment variable
 API_KEY = st.secrets["google"]["api_key"]
 if API_KEY:
+    os.environ["GOOGLE_API_KEY"] = API_KEY  # Make sure dependent libraries can find it
     genai.configure(api_key=API_KEY)
 else:
     st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
