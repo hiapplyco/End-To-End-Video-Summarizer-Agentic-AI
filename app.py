@@ -15,11 +15,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configure Google API
-API_KEY = os.getenv("GOOGLE_API_KEY")
+# Load environment variables from Streamlit secrets
+API_KEY = st.secrets["GOOGLE_API_KEY"]
 if API_KEY:
     genai.configure(api_key=API_KEY)
 else:
-    st.error("Google API Key not found. Please set the GOOGLE_API_KEY environment variable.")
+    st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
     st.stop()
 
 # Page configuration
