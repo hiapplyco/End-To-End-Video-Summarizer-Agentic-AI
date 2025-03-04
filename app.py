@@ -9,14 +9,9 @@ import time
 import os
 import tempfile
 from pathlib import Path
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Configure Google API
 # Load environment variables from Streamlit secrets
-API_KEY = st.secrets["GOOGLE_API_KEY"]
+API_KEY = st.secrets["google"]["api_key"]
 if API_KEY:
     genai.configure(api_key=API_KEY)
 else:
