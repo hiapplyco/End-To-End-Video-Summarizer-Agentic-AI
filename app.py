@@ -4,7 +4,7 @@ from phi.model.google import Gemini
 from phi.tools.duckduckgo import DuckDuckGo
 import google.generativeai as genai
 from google.generativeai import upload_file, get_file
-from elevenlabs import generate, voices
+from elevenlabs import generate, play, voices
 from elevenlabs.api.error import UnauthenticatedRateLimitError, RateLimitError
 
 import time
