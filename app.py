@@ -31,7 +31,7 @@ def set_background(png_file):
     bin_str = get_base64_of_bin_file(png_file)
     page_bg_img = '''
     <style>
-    /* Full background image with no overlay */
+    /* Full background image */
     .stApp {
         background-image: url("data:image/png;base64,%s");
         background-size: cover;
@@ -39,55 +39,82 @@ def set_background(png_file):
         background-repeat: no-repeat;
     }
     
-    /* Apply glassmorphism effect to containers */
-    div.block-container {
-        background: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+    /* Main container - add a subtle dark overlay to the entire app */
+    .main .block-container {
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 20px;
         border-radius: 10px;
-        backdrop-filter: blur(10px); /* blur effect behind the container */
-        -webkit-backdrop-filter: blur(10px); /* for Safari */
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 5px;
-        margin: 10px 0;
     }
     
-    /* Make text containers more readable */
-    .stMarkdown, .stText, div[data-testid="stExpander"] {
-        background: rgba(255, 255, 255, 0.7); /* more opaque white */
+    /* Style for all content sections */
+    .stMarkdown, div[data-testid="stExpander"] {
+        background-color: rgba(255, 255, 255, 0.85);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Headers with dark background for better readability */
+    h1, h2, h3 {
+        background-color: rgba(43, 43, 43, 0.9);
+        color: white !important;
+        padding: 10px 15px;
         border-radius: 8px;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        padding: 10px;
-        margin: 5px 0;
+        margin-bottom: 20px;
     }
     
-    /* Make sidebar more readable */
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+    /* Button styling */
+    .stButton button {
+        background-color: #3498DB !important;
+        color: white !important;
+        font-weight: bold !important;
+        border: none !important;
+        padding: 10px 20px !important;
     }
     
-    /* Ensure buttons and inputs are readable */
-    .stButton button, .stTextInput input, .stSelectbox, .stFileUploader {
-        background: rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(5px) !important;
-        -webkit-backdrop-filter: blur(5px) !important;
+    /* File uploader styling */
+    .stFileUploader {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        padding: 20px !important;
+        border-radius: 10px !important;
+        margin-bottom: 20px !important;
     }
     
-    /* Improve header visibility */
-    h1, h2, h3, h4, h5 {
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 5px;
-        padding: 10px;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
+    /* Text input and text areas */
+    .stTextInput input, .stTextArea textarea {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid #ccc !important;
     }
     
-    /* Custom class for when you want text directly on the background */
-    .transparent-text {
-        background: transparent !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+    /* Sidebar styling */
+    [data-testid="stSidebar"] .css-1d391kg {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* Make sure text is readable everywhere */
+    p, li, div {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Testimonial boxes */
+    .testimonial {
+        background-color: rgba(255, 255, 255, 0.85);
+        border-left: 5px solid #3498DB;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Analysis section */
+    .analysis-section {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        margin-top: 20px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
     </style>
     ''' % bin_str
