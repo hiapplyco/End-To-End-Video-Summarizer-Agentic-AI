@@ -1,23 +1,38 @@
-phidata 
-python-dotenv
-yfinance
-packaging
-duckduckgo-search
-fastapi
-uvicorn
-groq
-openai
-sqlalchemy
-pgvector
-psycopg[binary]
-pypdf
+# Streamlit and UI
 streamlit
+pillow
+
+# Phi Agent and Google AI
+phi-client
 phidata
 google-generativeai
 duckduckgo-search
-phi-client
+
+# Text-to-speech
 elevenlabs
-requests
-pillow
+
+# Data processing
 numpy
 pandas
+requests
+python-dotenv
+
+# PDF processing
+pypdf
+
+# Database (if needed)
+sqlalchemy
+pgvector
+psycopg[binary]
+
+# API (if needed)
+fastapi
+uvicorn
+
+# Additional LLM APIs (if needed)
+groq
+openai
+
+# Finance data (if needed)
+yfinance
+packaging
