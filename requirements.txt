@@ -1,26 +1,8 @@
-# Core dependencies
-streamlit
-pillow
-numpy
-pandas
-requests
-python-dotenv
-
-# Google AI
-google-generativeai
-
-# Use the correct phi package name
-phi
 phidata
-
-# Text-to-speech
-elevenlabs
-
-# Search capability
-duckduckgo-search
-
-# Additional utilities (if needed)
+python-dotenv
+yfinance
 packaging
+duckduckgo-search
 fastapi
 uvicorn
 groq
@@ -29,4 +11,6 @@ sqlalchemy
 pgvector
 psycopg[binary]
 pypdf
-yfinance
+streamlit
+google-generativeai
+elevenlabs
