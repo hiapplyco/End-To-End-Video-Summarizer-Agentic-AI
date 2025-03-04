@@ -4,17 +4,56 @@ from phi.model.google import Gemini
 from phi.tools.duckduckgo import DuckDuckGo
 import google.generativeai as genai
 from google.generativeai import upload_file, get_file
+from elevenlabs import generate, voices
+from elevenlabs.api.error import UnauthenticatedRateLimitError, RateLimitError
 
 import time
 import os
 import tempfile
 from pathlib import Path
+import base64
 
-# Retrieve API key from secrets and set it as an environment variable
-API_KEY = st.secrets["google"]["api_key"]
-if API_KEY:
-    os.environ["GOOGLE_API_KEY"] = API_KEY  # Make sure dependent libraries can find it
-    genai.configure(api_key=API_KEY)
+# Function to set background image from file
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+def set_background(png_file):
+    bin_str = get_base64_of_bin_file(png_file)
+    page_bg_img = '''
+    <style>
+    .stApp {
+        background-image: url("data:image/png;base64,%s");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .stApp::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.85);
+        z-index: -1;
+    }
+    </style>
+    ''' % bin_str
+    st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# Set background image if exists
+if os.path.exists("assets/background.jpg"):
+    set_background("assets/background.jpg")
+
+# Retrieve API keys from secrets
+API_KEY_GOOGLE = st.secrets["google"]["api_key"]
+API_KEY_ELEVENLABS = st.secrets.get("elevenlabs", {}).get("api_key", None)
+
+if API_KEY_GOOGLE:
+    os.environ["GOOGLE_API_KEY"] = API_KEY_GOOGLE
+    genai.configure(api_key=API_KEY_GOOGLE)
 else:
     st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
     st.stop()
@@ -78,6 +117,25 @@ with st.sidebar:
     We offer adult and kids gi jiu jitsu, no-gi submission grappling, and Muay Thai classes in Solana Beach, San Diego, CA.
     """)
     
+    # ElevenLabs API Key input in sidebar
+    with st.expander("Voice Settings", expanded=False):
+        st.caption("Configure text-to-speech settings")
+        user_api_key = st.text_input("ElevenLabs API Key (optional)", 
+                                     type="password",
+                                     help="Enter your ElevenLabs API key for better quality and unlimited characters")
+        # Use user-provided API key or fall back to the one in secrets
+        elevenlabs_api_key = user_api_key if user_api_key else API_KEY_ELEVENLABS
+        
+        if elevenlabs_api_key:
+            try:
+                voice_options = [v.name for v in voices(api_key=elevenlabs_api_key)]
+                selected_voice = st.selectbox("Choose Voice", options=voice_options, index=0)
+            except Exception:
+                st.warning("Could not retrieve voices. Using default voice.")
+                selected_voice = "Adam"  # Default voice
+        else:
+            selected_voice = "Adam"  # Default voice
+    
     st.subheader("Contact Us")
     st.write("""
     **Call**: (858) 792-7776
@@ -98,6 +156,13 @@ def initialize_agent():
     )
 
 multimodal_Agent = initialize_agent()
+
+# Initialize session state for storing the analysis result
+if 'analysis_result' not in st.session_state:
+    st.session_state.analysis_result = None
+
+if 'audio_generated' not in st.session_state:
+    st.session_state.audio_generated = False
 
 # Main UI
 st.header("BLENDING THE JIU JITSU EXPERIENCE")
@@ -183,27 +248,69 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                     time.sleep(0.5)
                     progress_bar.empty()
                 
+                    # Store the analysis result in session state
+                    st.session_state.analysis_result = response.content
+                    # Reset audio generated flag
+                    st.session_state.audio_generated = False
+                
                 # Display analysis result
                 st.markdown('<div class="analysis-section">', unsafe_allow_html=True)
                 st.subheader("📋 Expert BJJ Analysis")
-                st.markdown(response.content)
+                st.markdown(st.session_state.analysis_result)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Feedback & download
-                col1, col2 = st.columns(2)
+                # Action buttons
+                col1, col2, col3 = st.columns(3)
                 with col1:
                     st.download_button(
                         label="💾 Save Analysis",
-                        data=response.content,
+                        data=st.session_state.analysis_result,
                         file_name="bjj_technique_analysis.md",
                         mime="text/markdown"
                     )
                 with col2:
                     st.button("👍 This analysis was helpful", key="feedback_helpful")
+                with col3:
+                    # Text-to-speech button
+                    if st.button("🔊 Listen to Analysis"):
+                        if elevenlabs_api_key:
+                            try:
+                                with st.spinner("Generating audio..."):
+                                    # Extract text without markdown formatting for better speech
+                                    clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
+                                    
+                                    # Generate audio using ElevenLabs
+                                    audio = generate(
+                                        text=clean_text,
+                                        voice=selected_voice,
+                                        model="eleven_multilingual_v1",
+                                        api_key=elevenlabs_api_key
+                                    )
+                                    
+                                    # Store audio in session state
+                                    st.session_state.audio = audio
+                                    st.session_state.audio_generated = True
+                                    
+                                    # Force rerun to show audio player
+                                    st.experimental_rerun()
+                            except UnauthenticatedRateLimitError:
+                                st.error("API rate limit exceeded. Please provide a valid ElevenLabs API key.")
+                            except RateLimitError:
+                                st.error("API rate limit reached. Try again later or use a different API key.")
+                            except Exception as e:
+                                st.error(f"Error generating audio: {str(e)}")
+                        else:
+                            st.error("ElevenLabs API key is required for text-to-speech. Please enter it in the sidebar.")
+                
+                # Display audio player if audio was generated
+                if st.session_state.audio_generated and hasattr(st.session_state, 'audio'):
+                    st.audio(st.session_state.audio, format="audio/mp3")
+                    
             except Exception as error:
                 st.error(f"An error occurred during analysis: {error}")
                 st.info("Try uploading a shorter video or check your internet connection.")
             finally:
+                # Clean up temporary file
                 Path(video_path).unlink(missing_ok=True)
 else:
     # Landing page content when no video is uploaded
