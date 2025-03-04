@@ -15,3 +15,9 @@ streamlit
 phidata
 google-generativeai
 duckduckgo-search
+phi-client
+elevenlabs
+requests
+pillow
+numpy
+pandas
