@@ -11,15 +11,11 @@ import tempfile
 from pathlib import Path
 from dotenv import load_dotenv
 
-API_KEY = os.getenv("GOOGLE_API_KEY")  # Try environment variable first
-if not API_KEY and 'google' in st.secrets:  # Then check Streamlit secrets
-    API_KEY = st.secrets["google"]["api_key"]
+# Load environment variables from .env file
+load_dotenv()
 
-if API_KEY:
-    genai.configure(api_key=API_KEY)
-else:
-    st.error("Google API Key not found. Please set the GOOGLE_API_KEY environment variable or configure it in Streamlit secrets.")
-    st.stop()
+# Configure Google API
+API_KEY = os.getenv("GOOGLE_API_KEY")
 if API_KEY:
     genai.configure(api_key=API_KEY)
 else:
@@ -91,7 +87,7 @@ with st.sidebar:
     - Coaching insights
     
     **Models:**
-    - Gemini 2.0 Flash for video analysis
+    - Gemini 2.0 Flash Exp for video analysis
     """)
     
     st.divider()
@@ -103,7 +99,7 @@ def initialize_agent():
     """Initialize and cache the Phi Agent with Gemini model."""
     return Agent(
         name="BJJ Video Analyzer",
-        model=Gemini(id="gemini-2.0-flash"),
+        model=Gemini(id="gemini-2.0-flash-exp"),
         tools=[DuckDuckGo()],
         markdown=True,
     )
