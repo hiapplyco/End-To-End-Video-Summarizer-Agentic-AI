@@ -43,7 +43,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- Custom CSS for consistent UI ---
+# --- Custom CSS for consistent UI and video preview sizing ---
 st.markdown("""
     <style>
     .main-header {
@@ -89,6 +89,12 @@ st.markdown("""
         border-left: 5px solid #3498DB;
         margin-top: 20px;
     }
+    /* Limit video preview width */
+    video {
+        max-width: 480px;
+        display: block;
+        margin: 0 auto;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -110,7 +116,7 @@ with st.sidebar:
     - Coaching insights
     
     **Models:**
-    - Gemini 2.0 Flash Exp for video analysis
+    - Gemini 2.0 Flash for video analysis
     """)
     st.divider()
     st.markdown("**Created by:** Apply, Co.")
@@ -121,7 +127,7 @@ def initialize_agent():
     """Initialize and cache the Phi Agent with Gemini model."""
     return Agent(
         name="BJJ Video Analyzer",
-        model=Gemini(id="gemini-2.0-flash-exp"),
+        model=Gemini(id="gemini-2.0-flash"),
         tools=[DuckDuckGo()],
         markdown=True,
     )
@@ -143,8 +149,8 @@ if video_file:
         temp_video.write(video_file.read())
         video_path = temp_video.name
     
-    # Display the video with a smaller preview (fixed width)
-    st.video(video_path, format="video/mp4", start_time=0, width=480)
+    # Display the video preview (sized via CSS)
+    st.video(video_path, format="video/mp4", start_time=0)
     
     # Query input and analyze button (side-by-side)
     query_col1, query_col2 = st.columns([3, 1])
@@ -158,7 +164,7 @@ if video_file:
         st.markdown("<br>", unsafe_allow_html=True)  # Spacing
         analyze_button = st.button("🔍 Analyze Technique", key="analyze_video_button", use_container_width=True)
     
-    # Processing logic when button is clicked
+    # Processing logic when the button is clicked
     if analyze_button:
         if not user_query:
             st.warning("⚠️ Please enter a question or insight to analyze the video.")
@@ -191,16 +197,16 @@ Structure your analysis as follows:
 Categorize the practitioner's level with specific observations of their technical execution. Example: "Intermediate: Shows understanding of basic mechanics but struggles with weight distribution during transitions."
 
 ## KEY STRENGTHS (2-3)
-• Identify technically sound elements with timestamps
+• Identify technically sound elements with timestamps  
 • Explain why these elements demonstrate good Jiu-Jitsu
 
 ## CRITICAL IMPROVEMENTS (2-3)
-• Pinpoint the highest-leverage technical corrections needed with timestamps
-• Explain the biomechanical principles being violated
+• Pinpoint the highest-leverage technical corrections needed with timestamps  
+• Explain the biomechanical principles being violated  
 • Note potential consequences in live rolling scenarios
 
 ## SPECIFIC DRILLS (1-2)
-• Prescribe targeted exercises that address the identified weaknesses
+• Prescribe targeted exercises that address the identified weaknesses  
 • Explain the correct feeling/sensation to aim for when practicing
 
 ## COACHING INSIGHT
