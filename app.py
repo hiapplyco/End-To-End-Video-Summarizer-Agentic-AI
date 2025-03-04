@@ -27,29 +27,70 @@ def get_base64_of_bin_file(bin_file):
         data = f.read()
     return base64.b64encode(data).decode()
 
-def set_background(image_file):
-    """Set the background image of the app using a local image file."""
-    bin_str = get_base64_of_bin_file(image_file)
-    page_bg_img = f'''
+def set_background(png_file):
+    bin_str = get_base64_of_bin_file(png_file)
+    page_bg_img = '''
     <style>
-    .stApp {{
-        background-image: url("data:image/jpeg;base64,{bin_str}");
+    /* Full background image with no overlay */
+    .stApp {
+        background-image: url("data:image/png;base64,%s");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-    }}
-    .stApp::before {{
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255, 255, 255, 0.85);
-        z-index: -1;
-    }}
+    }
+    
+    /* Apply glassmorphism effect to containers */
+    div.block-container {
+        background: rgba(255, 255, 255, 0.2); /* semi-transparent white */
+        border-radius: 10px;
+        backdrop-filter: blur(10px); /* blur effect behind the container */
+        -webkit-backdrop-filter: blur(10px); /* for Safari */
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 5px;
+        margin: 10px 0;
+    }
+    
+    /* Make text containers more readable */
+    .stMarkdown, .stText, div[data-testid="stExpander"] {
+        background: rgba(255, 255, 255, 0.7); /* more opaque white */
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        padding: 10px;
+        margin: 5px 0;
+    }
+    
+    /* Make sidebar more readable */
+    [data-testid="stSidebar"] {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* Ensure buttons and inputs are readable */
+    .stButton button, .stTextInput input, .stSelectbox, .stFileUploader {
+        background: rgba(255, 255, 255, 0.8) !important;
+        backdrop-filter: blur(5px) !important;
+        -webkit-backdrop-filter: blur(5px) !important;
+    }
+    
+    /* Improve header visibility */
+    h1, h2, h3, h4, h5 {
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 5px;
+        padding: 10px;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    
+    /* Custom class for when you want text directly on the background */
+    .transparent-text {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
     </style>
-    '''
+    ''' % bin_str
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # ------------------------------
