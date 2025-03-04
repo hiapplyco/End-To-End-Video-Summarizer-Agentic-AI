@@ -39,82 +39,153 @@ def set_background(png_file):
         background-repeat: no-repeat;
     }
     
-    /* Main container - add a subtle dark overlay to the entire app */
+    /* Remove those strange lines at the top */
+    header {
+        display: none !important;
+    }
+    
+    /* Main layout container - add proper spacing */
     .main .block-container {
-        background-color: rgba(0, 0, 0, 0.4);
-        padding: 20px;
-        border-radius: 10px;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 1000px;
+        margin: 0 auto;
     }
     
-    /* Style for all content sections */
-    .stMarkdown, div[data-testid="stExpander"] {
-        background-color: rgba(255, 255, 255, 0.85);
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Section styling */
+    .stMarkdown {
+        margin-bottom: 1.5rem !important;
     }
     
-    /* Headers with dark background for better readability */
+    /* Headers with dark background and proper padding */
     h1, h2, h3 {
         background-color: rgba(43, 43, 43, 0.9);
         color: white !important;
-        padding: 10px 15px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        padding: 1rem 1.5rem !important;
+        border-radius: 8px !important;
+        margin-bottom: 1.5rem !important;
+        font-weight: 600 !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Paragraph text */
+    p {
+        background-color: rgba(255, 255, 255, 0.85);
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.6 !important;
     }
     
     /* Button styling */
     .stButton button {
         background-color: #3498DB !important;
         color: white !important;
-        font-weight: bold !important;
+        font-weight: 600 !important;
         border: none !important;
-        padding: 10px 20px !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 8px !important;
+        transition: all 0.3s ease !important;
+    }
+    .stButton button:hover {
+        background-color: #2980B9 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
     }
     
     /* File uploader styling */
-    .stFileUploader {
+    [data-testid="stFileUploader"] {
         background-color: rgba(255, 255, 255, 0.9) !important;
-        padding: 20px !important;
+        padding: 2rem !important;
         border-radius: 10px !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 2rem !important;
+        border: 2px dashed #3498DB !important;
     }
     
     /* Text input and text areas */
     .stTextInput input, .stTextArea textarea {
         background-color: rgba(255, 255, 255, 0.9) !important;
         border: 1px solid #ccc !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 8px !important;
     }
     
     /* Sidebar styling */
-    [data-testid="stSidebar"] .css-1d391kg {
-        background-color: rgba(255, 255, 255, 0.9);
+    [data-testid="stSidebar"] {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        padding: 2rem 1rem !important;
     }
-    
-    /* Make sure text is readable everywhere */
-    p, li, div {
-        color: #333;
-        font-weight: 500;
+    [data-testid="stSidebar"] h1 {
+        background: none !important;
+        color: #333 !important;
+        padding: 0 !important;
+    }
+    [data-testid="stSidebar"] img {
+        margin-bottom: 1rem !important;
     }
     
     /* Testimonial boxes */
     .testimonial {
-        background-color: rgba(255, 255, 255, 0.85);
-        border-left: 5px solid #3498DB;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border-left: 5px solid #3498DB !important;
+        padding: 1.5rem !important;
+        border-radius: 8px !important;
+        margin-bottom: 1.5rem !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
     }
     
     /* Analysis section */
     .analysis-section {
         background-color: rgba(255, 255, 255, 0.9) !important;
         border-radius: 10px !important;
-        padding: 20px !important;
-        margin-top: 20px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        padding: 2rem !important;
+        margin-top: 2rem !important;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* Expander styling */
+    .stExpander {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        border-radius: 8px !important;
+        margin-bottom: 1.5rem !important;
+    }
+    .stExpander > div:first-child {
+        padding: 1rem !important;
+    }
+    .stExpander > div:last-child {
+        padding: 0 1rem 1rem 1rem !important;
+    }
+    
+    /* Video container */
+    [data-testid="stVideo"] {
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        margin: 1.5rem 0 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    /* Progress bar */
+    .stProgress > div > div {
+        background-color: #3498DB !important;
+    }
+    
+    /* Audio player */
+    .stAudio {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        padding: 1rem !important;
+        border-radius: 8px !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    /* Make columns have proper spacing */
+    [data-testid="column"] {
+        padding: 0.5rem !important;
+    }
+    
+    /* Custom separator */
+    hr {
+        margin: 2rem 0 !important;
+        border-color: rgba(52, 152, 219, 0.3) !important;
     }
     </style>
     ''' % bin_str
