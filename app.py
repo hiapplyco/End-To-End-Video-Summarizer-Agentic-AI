@@ -239,11 +239,9 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
 
         # Audio Options Section - Now consistently below analysis
         if st.button("Listen to Analysis (Audio Options)"): # More informative button
-            st.write("Listen to Analysis button clicked!") # DEBUG LINE
             st.session_state.show_audio_options = True
 
         if st.session_state.show_audio_options:
-            st.write("show_audio_options is True, showing expander") # DEBUG LINE
             with st.expander("Audio Voice Settings", expanded=True): # Clearer expander title
                 st.subheader("Voice Options")
 
@@ -251,7 +249,6 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
                 selected_voice_id = "21m00Tcm4TlvDq8ikWAM"  # Default voice ID
                 if elevenlabs_api_key:
                     try:
-                        st.write("ElevenLabs API key found, trying to get voices") # DEBUG LINE
                         client = ElevenLabs(api_key=elevenlabs_api_key)
                         voice_data = client.voices.get_all()
                         voices_list = [v.name for v in voice_data.voices]
@@ -267,32 +264,32 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
                     st.error("ElevenLabs API key missing.")
 
                 if st.button("Generate Audio Analysis"): # Clear CTA for audio generation
-                    st.write("Generate Audio Analysis button clicked!") # DEBUG LINE
                     if elevenlabs_api_key:
                         try:
                             with st.spinner("Generating audio..."):
-                                st.write("Generating audio with ElevenLabs...") # DEBUG LINE
                                 clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
                                 client = ElevenLabs(api_key=elevenlabs_api_key)
-                                audio = client.text_to_speech.convert(
+                                # **Modified Audio Generation Code:**
+                                audio_generator = client.text_to_speech.convert(
                                     text=clean_text,
                                     voice_id=selected_voice_id,
                                     model_id="eleven_multilingual_v2"
                                 )
-                                st.session_state.audio = audio
+                                audio_bytes = b"" # Initialize empty bytes
+                                for chunk in audio_generator:
+                                    audio_bytes += chunk # Accumulate audio chunks
+                                st.session_state.audio = audio_bytes # Store audio bytes in session state
                                 st.session_state.audio_generated = True
 
-                                st.audio(st.session_state.audio, format="audio/mp3") # Use st.session_state.audio to play
+                                st.audio(st.session_state.audio, format="audio/mp3") # Play audio from bytes
                                 st.download_button(
                                     label="Download Audio Analysis", # Clearer label
-                                    data=st.session_state.audio, # Use st.session_state.audio for download
+                                    data=st.session_state.audio, # Download audio from bytes
                                     file_name="bjj_analysis_audio.mp3",
                                     mime="audio/mp3"
                                 )
-                                st.write("Audio generation successful and displayed!") # DEBUG LINE
                         except Exception as e:
                             st.error(f"Audio generation error: {str(e)}") # Include error in error message
-                            st.write(f"ElevenLabs Error Details: {e}") # More detailed error for debugging
                     else:
                         st.error("ElevenLabs API key needed for audio.")
 
