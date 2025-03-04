@@ -4,7 +4,7 @@ from phi.model.google import Gemini
 from phi.tools.duckduckgo import DuckDuckGo
 import google.generativeai as genai
 from google.generativeai import upload_file, get_file
-from elevenlabs import generate, play, voices
+from elevenlabs.client import ElevenLabs
 from elevenlabs.api.error import UnauthenticatedRateLimitError, RateLimitError
 
 import time
@@ -13,7 +13,9 @@ import tempfile
 from pathlib import Path
 import base64
 
-# Function to set background image from file
+# -------------------------------------------------------------------
+# Optional: Function to set background image from file
+# -------------------------------------------------------------------
 def get_base64_of_bin_file(bin_file):
     with open(bin_file, 'rb') as f:
         data = f.read()
@@ -34,8 +36,8 @@ def set_background(png_file):
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 100%%;
+        height: 100%%;
         background-color: rgba(255, 255, 255, 0.85);
         z-index: -1;
     }
@@ -43,14 +45,21 @@ def set_background(png_file):
     ''' % bin_str
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
+# -------------------------------------------------------------------
 # Set background image if exists
+# -------------------------------------------------------------------
 if os.path.exists("assets/background.jpg"):
     set_background("assets/background.jpg")
 
+# -------------------------------------------------------------------
 # Retrieve API keys from secrets
+# -------------------------------------------------------------------
 API_KEY_GOOGLE = st.secrets["google"]["api_key"]
 API_KEY_ELEVENLABS = st.secrets.get("elevenlabs", {}).get("api_key", None)
 
+# -------------------------------------------------------------------
+# Configure Google Generative AI
+# -------------------------------------------------------------------
 if API_KEY_GOOGLE:
     os.environ["GOOGLE_API_KEY"] = API_KEY_GOOGLE
     genai.configure(api_key=API_KEY_GOOGLE)
@@ -58,14 +67,18 @@ else:
     st.error("Google API Key not found. Please set the GOOGLE_API_KEY in Streamlit secrets.")
     st.stop()
 
+# -------------------------------------------------------------------
 # Basic page configuration
+# -------------------------------------------------------------------
 st.set_page_config(
     page_title="Studio 540 - BJJ Video Analyzer",
     page_icon="🥋",
     layout="wide"
 )
 
+# -------------------------------------------------------------------
 # Basic CSS styling
+# -------------------------------------------------------------------
 st.markdown("""
     <style>
     .stApp {
@@ -98,7 +111,9 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# -------------------------------------------------------------------
 # Header
+# -------------------------------------------------------------------
 col1, col2 = st.columns([1, 3])
 with col1:
     st.image("https://www.studio540.com/wp-content/uploads/2023/03/clear_logo.png", width=200)
@@ -106,7 +121,9 @@ with col2:
     st.title("BJJ Video Analyzer")
     st.write("Powered by Gemini 2.0 Flash")
 
+# -------------------------------------------------------------------
 # Sidebar content
+# -------------------------------------------------------------------
 with st.sidebar:
     st.image("https://www.studio540.com/wp-content/uploads/2023/03/clear_logo.png", width=150)
     st.header("About Studio 540")
@@ -120,21 +137,38 @@ with st.sidebar:
     # ElevenLabs API Key input in sidebar
     with st.expander("Voice Settings", expanded=False):
         st.caption("Configure text-to-speech settings")
-        user_api_key = st.text_input("ElevenLabs API Key (optional)", 
-                                     type="password",
-                                     help="Enter your ElevenLabs API key for better quality and unlimited characters")
+        user_api_key = st.text_input(
+            "ElevenLabs API Key (optional)", 
+            type="password",
+            help="Enter your ElevenLabs API key for better quality and unlimited characters"
+        )
         # Use user-provided API key or fall back to the one in secrets
         elevenlabs_api_key = user_api_key if user_api_key else API_KEY_ELEVENLABS
         
+        # Attempt to fetch voice list if an API key is provided
         if elevenlabs_api_key:
             try:
-                voice_options = [v.name for v in voices(api_key=elevenlabs_api_key)]
-                selected_voice = st.selectbox("Choose Voice", options=voice_options, index=0)
+                client = ElevenLabs(api_key=elevenlabs_api_key)
+                voice_data = client.voices.get_all()
+                # Create a list of voice names
+                voices_list = [v.name for v in voice_data.voices]
+                
+                # Let user pick a voice name
+                selected_voice_name = st.selectbox("Choose Voice", options=voices_list, index=0)
+                
+                # Find the matching voice_id
+                selected_voice_id = next(
+                    (v.voice_id for v in voice_data.voices if v.name == selected_voice_name),
+                    None
+                )
+                if not selected_voice_id:
+                    st.warning("Could not match selected voice name. Using default voice ID.")
+                    selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
             except Exception:
-                st.warning("Could not retrieve voices. Using default voice.")
-                selected_voice = "Adam"  # Default voice
+                st.warning("Could not retrieve voices. Using default voice ID.")
+                selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
         else:
-            selected_voice = "Adam"  # Default voice
+            selected_voice_id = "21m00Tcm4TlvDq8ikWAM"  # Default voice ID
     
     st.subheader("Contact Us")
     st.write("""
@@ -145,6 +179,9 @@ with st.sidebar:
     **Email**: Frontdesk@studio540.com
     """)
 
+# -------------------------------------------------------------------
+# Agent initialization
+# -------------------------------------------------------------------
 @st.cache_resource
 def initialize_agent():
     """Initialize and cache the Phi Agent with Gemini model."""
@@ -157,14 +194,18 @@ def initialize_agent():
 
 multimodal_Agent = initialize_agent()
 
-# Initialize session state for storing the analysis result
+# -------------------------------------------------------------------
+# Session state for storing analysis result & audio
+# -------------------------------------------------------------------
 if 'analysis_result' not in st.session_state:
     st.session_state.analysis_result = None
 
 if 'audio_generated' not in st.session_state:
     st.session_state.audio_generated = False
 
-# Main UI
+# -------------------------------------------------------------------
+# Main UI - Landing
+# -------------------------------------------------------------------
 st.header("BLENDING THE JIU JITSU EXPERIENCE")
 st.write("Upload a video of your BJJ technique to receive expert AI analysis and personalized feedback.")
 
@@ -176,11 +217,12 @@ video_file = st.file_uploader(
 )
 
 if video_file:
+    # Save video to a temp file
     with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video:
         temp_video.write(video_file.read())
         video_path = temp_video.name
     
-    # Display video
+    # Display the uploaded video
     st.video(video_path, format="video/mp4", start_time=0)
 
     # Query input and analyze button
@@ -189,7 +231,6 @@ if video_file:
         placeholder="Examples: 'Analyze this armbar setup', 'What am I doing wrong with this guard pass?', 'How can I improve my transitions?'",
         height=120
     )
-    
     analyze_button = st.button("🔍 Analyze Technique", key="analyze_video_button")
 
     if analyze_button:
@@ -259,7 +300,7 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                 st.markdown(st.session_state.analysis_result)
                 st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Action buttons
+                # Action buttons: save, helpful, and text-to-speech
                 col1, col2, col3 = st.columns(3)
                 with col1:
                     st.download_button(
@@ -276,15 +317,17 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                         if elevenlabs_api_key:
                             try:
                                 with st.spinner("Generating audio..."):
-                                    # Extract text without markdown formatting for better speech
+                                    # Clean text for TTS
                                     clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
                                     
-                                    # Generate audio using ElevenLabs
-                                    audio = generate(
+                                    # Create ElevenLabs client
+                                    client = ElevenLabs(api_key=elevenlabs_api_key)
+                                    
+                                    # Generate audio using the selected voice ID
+                                    audio = client.text_to_speech.convert(
                                         text=clean_text,
-                                        voice=selected_voice,
-                                        model="eleven_multilingual_v1",
-                                        api_key=elevenlabs_api_key
+                                        voice_id=selected_voice_id,
+                                        model_id="eleven_multilingual_v2"
                                     )
                                     
                                     # Store audio in session state
