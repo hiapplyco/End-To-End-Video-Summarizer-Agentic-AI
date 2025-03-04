@@ -29,42 +29,33 @@ def get_base64_of_bin_file(bin_file):
 
 def set_background(png_file):
     bin_str = get_base64_of_bin_file(png_file)
-    page_bg_img = '''
+    page_bg_img = f'''
     <style>
-    /* Color Variables */
-    :root {
-        --gi-blue: #1a365d;         /* Deep blue inspired by BJJ gi */
-        --mat-red: #c53030;         /* Red accent inspired by BJJ mats */
-        --belt-gold: #d69e2e;       /* Gold accent inspired by belt stripes */
-        --off-white: #f7fafc;       /* Clean background color */
-        --dark-text: #2d3748;       /* Primary text color */
-        --light-text: #f7fafc;      /* Text for dark backgrounds */
-        --shadow: rgba(0, 0, 0, 0.15); /* Standard shadow */
-    }
-
-    /* Full background image with overlay */
-    .stApp {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("data:image/png;base64,%s");
+    :root {{
+        --gi-blue: #1a365d;
+        --mat-red: #c53030;
+        --belt-gold: #d69e2e;
+        --off-white: #f7fafc;
+        --dark-text: #2d3748;
+        --light-text: #f7fafc;
+        --shadow: rgba(0, 0, 0, 0.15);
+    }}
+    .stApp {{
+        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("data:image/png;base64,{bin_str}");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         color: var(--dark-text) !important;
-    }
-
-    /* Remove default headers */
-    header {
+    }}
+    header {{
         display: none !important;
-    }
-
-    /* Main container styling */
-    .main .block-container {
+    }}
+    .main .block-container {{
         padding: 2rem 1rem;
         max-width: 1100px;
         margin: 0 auto;
-    }
-
-    /* Headers - Blue background with white text */
-    h1, h2, h3 {
+    }}
+    h1, h2, h3 {{
         background-color: var(--gi-blue);
         color: var(--light-text) !important;
         padding: 1rem 1.5rem !important;
@@ -72,20 +63,16 @@ def set_background(png_file):
         margin-bottom: 1.5rem !important;
         font-weight: 600 !important;
         box-shadow: 0 4px 6px var(--shadow);
-    }
-
-    /* Paragraphs - White background with dark text */
-    p {
+    }}
+    p {{
         background-color: var(--off-white);
         color: var(--dark-text) !important;
         padding: 1rem !important;
         border-radius: 8px !important;
         margin-bottom: 1rem !important;
         box-shadow: 0 2px 4px var(--shadow);
-    }
-
-    /* Primary buttons - Red with white text */
-    .stButton button {
+    }}
+    .stButton button {{
         background-color: var(--mat-red) !important;
         color: var(--light-text) !important;
         font-weight: 600 !important;
@@ -94,96 +81,78 @@ def set_background(png_file):
         border-radius: 8px !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 2px 4px var(--shadow) !important;
-    }
-    .stButton button:hover {
-        background-color: #b52a2a !important; /* Darker red on hover */
+    }}
+    .stButton button:hover {{
+        background-color: #b52a2a !important;
         transform: translateY(-2px) !important;
         box-shadow: 0 4px 8px var(--shadow) !important;
-    }
-
-    /* File uploader - Styled with gold accent */
-    [data-testid="stFileUploader"] {
+    }}
+    [data-testid="stFileUploader"] {{
         background-color: var(--off-white) !important;
         padding: 2rem !important;
         border-radius: 10px !important;
         margin-bottom: 2rem !important;
         border: 2px dashed var(--belt-gold) !important;
         box-shadow: 0 4px 6px var(--shadow) !important;
-    }
-
-    /* Text inputs */
-    .stTextInput input, .stTextArea textarea {
+    }}
+    .stTextInput input, .stTextArea textarea {{
         background-color: var(--off-white) !important;
         color: var(--dark-text) !important;
         border: 1px solid #e2e8f0 !important;
         padding: 0.75rem 1rem !important;
         border-radius: 8px !important;
-    }
-
-    /* Sidebar styling */
-    [data-testid="stSidebar"] {
+    }}
+    [data-testid="stSidebar"] {{
         background-color: var(--gi-blue) !important;
         color: var(--light-text) !important;
-    }
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    }}
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {{
         background: none !important;
         color: var(--light-text) !important;
         padding: 0.5rem 0 !important;
         box-shadow: none !important;
-    }
-    [data-testid="stSidebar"] p {
+    }}
+    [data-testid="stSidebar"] p {{
         background: none !important;
         color: var(--light-text) !important;
         padding: 0.25rem 0 !important;
         box-shadow: none !important;
-    }
-
-    /* FIX: Sidebar input elements */
+    }}
     [data-testid="stSidebar"] input,
     [data-testid="stSidebar"] textarea,
     [data-testid="stSidebar"] .stTextInput input,
     [data-testid="stSidebar"] .stSelectbox div,
     [data-testid="stSidebar"] button,
-    [data-testid="stSidebar"] [data-baseweb="select"] {
+    [data-testid="stSidebar"] [data-baseweb="select"] {{
         background-color: var(--off-white) !important;
         color: var(--dark-text) !important;
-    }
-
-    /* FIX: Sidebar expander content and labels */
+    }}
     [data-testid="stSidebar"] label,
     [data-testid="stSidebar"] caption,
-    [data-testid="stSidebar"] .stMarkdown div {
+    [data-testid="stSidebar"] .stMarkdown div {{
         color: var(--light-text) !important;
-    }
-
-    /* FIX: Dropdown selection text in sidebar */
+    }}
     [data-testid="stSidebar"] [data-baseweb="select"] [data-baseweb="tag"],
-    [data-testid="stSidebar"] [data-baseweb="select"] span {
+    [data-testid="stSidebar"] [data-baseweb="select"] span {{
         color: var(--dark-text) !important;
-    }
-
-    /* FIX: Sidebar selectbox dropdown menu */
-    div[data-baseweb="popover"] div[data-baseweb="menu"] {
+    }}
+    div[data-baseweb="popover"] div[data-baseweb="menu"] {{
         background-color: var(--off-white) !important;
-    }
-    div[data-baseweb="popover"] div[data-baseweb="menu"] li {
+    }}
+    div[data-baseweb="popover"] div[data-baseweb="menu"] li {{
         color: var(--dark-text) !important;
-    }
-
-    /* Sidebar expandable sections */
-    [data-testid="stSidebar"] .streamlit-expanderHeader {
+    }}
+    [data-testid="stSidebar"] .streamlit-expanderHeader {{
         color: var(--light-text) !important;
         background-color: rgba(255, 255, 255, 0.1) !important;
         border-radius: 8px !important;
-    }
-    [data-testid="stSidebar"] .streamlit-expanderContent {
+    }}
+    [data-testid="stSidebar"] .streamlit-expanderContent {{
         background-color: rgba(255, 255, 255, 0.05) !important;
         color: var(--light-text) !important;
         border-radius: 0 0 8px 8px !important;
-    }
-
-    /* Testimonial boxes - White with blue accent */
-    .testimonial {
+    }}
+    .testimonial {{
         background-color: var(--off-white) !important;
         border-left: 5px solid var(--gi-blue) !important;
         padding: 1.5rem !important;
@@ -191,10 +160,8 @@ def set_background(png_file):
         margin-bottom: 1.5rem !important;
         box-shadow: 0 4px 12px var(--shadow) !important;
         color: var(--dark-text) !important;
-    }
-
-    /* Analysis section - White with gold accent */
-    .analysis-section {
+    }}
+    .analysis-section {{
         background-color: var(--off-white) !important;
         border-left: 5px solid var(--belt-gold) !important;
         border-radius: 10px !important;
@@ -202,64 +169,48 @@ def set_background(png_file):
         margin-top: 2rem !important;
         box-shadow: 0 6px 18px var(--shadow) !important;
         color: var(--dark-text) !important;
-    }
-
-    /* Expander styling */
-    .stExpander {
+    }}
+    .stExpander {{
         background-color: var(--off-white) !important;
         border-radius: 8px !important;
         margin-bottom: 1.5rem !important;
         box-shadow: 0 2px 4px var(--shadow) !important;
-    }
-
-    /* Video container */
-    [data-testid="stVideo"] {
+    }}
+    [data-testid="stVideo"] {{
         border-radius: 8px !important;
         overflow: hidden !important;
         margin: 1.5rem 0 !important;
         box-shadow: 0 4px 12px var(--shadow) !important;
         border: 3px solid var(--gi-blue) !important;
-    }
-
-    /* Progress bar - Red with animation */
-    .stProgress > div > div {
+    }}
+    .stProgress > div > div {{
         background-color: var(--mat-red) !important;
-    }
-
-    /* Audio player */
-    .stAudio {
+    }}
+    .stAudio {{
         background-color: var(--off-white) !important;
         padding: 1rem !important;
         border-radius: 8px !important;
         margin-top: 1.5rem !important;
         box-shadow: 0 2px 4px var(--shadow) !important;
-    }
-
-    /* Column spacing */
-    [data-testid="column"] {
+    }}
+    [data-testid="column"] {{
         padding: 0.5rem !important;
-    }
-
-    /* Custom separator */
-    hr {
+    }}
+    hr {{
         margin: 2rem 0 !important;
         border-color: var(--belt-gold) !important;
-    }
-
-    /* Ensure all text in the main content area is visible */
-    .main {
+    }}
+    .main {{
         color: var(--dark-text) !important;
-    }
-    .main div, .main span, .main p, .main label {
+    }}
+    .main div, .main span, .main p, .main label {{
         color: var(--dark-text) !important;
-    }
-
-    /* Give some spacing to the logo */
-    img {
+    }}
+    img {{
         margin: 1rem 0 !important;
-    }
+    }}
     </style>
-    ''' % bin_str
+    '''
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
 # ------------------------------
@@ -317,7 +268,6 @@ st.markdown("""
         margin-bottom: 15px;
         font-style: italic;
     }
-    /* Ensure elements use full width of container and are responsive */
     .stTextArea textarea, .stButton button, .stFileUploader, video {
         max-width: 480px;
         width: 100%;
@@ -340,7 +290,6 @@ st.markdown("""
         background-color: #2980B9;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    /* Responsive adjustments */
     @media screen and (max-width: 768px) {
         [data-testid="column"] {
             flex: 0 0 100% !important;
@@ -520,10 +469,10 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                 if st.session_state.show_audio_options:
                     with st.expander("🎧 Voice Selection", expanded=True):
                         st.subheader("Choose a voice for your analysis")
-                        
+
                         # Get the ElevenLabs API key from Streamlit secrets
                         elevenlabs_api_key = API_KEY_ELEVENLABS
-                        
+
                         # Voice selection
                         selected_voice_id = "21m00Tcm4TlvDq8ikWAM"  # Default voice ID
                         if elevenlabs_api_key:
@@ -541,7 +490,7 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                                 selected_voice_id = "21m00Tcm4TlvDq8ikWAM"
                         else:
                             st.error("ElevenLabs API key not found in Streamlit secrets.")
-                        
+
                         # Generate audio and close buttons
                         gen_col1, gen_col2 = st.columns([1, 1])
                         with gen_col1:
@@ -551,7 +500,7 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                             if close_button:
                                 st.session_state.show_audio_options = False
                                 st.experimental_rerun()
-                        
+
                         # Generate audio when button is clicked
                         if generate_button:
                             if elevenlabs_api_key:
@@ -566,7 +515,7 @@ Use precise BJJ terminology while remaining accessible. Balance encouragement wi
                                         )
                                         st.session_state.audio = audio
                                         st.session_state.audio_generated = True
-                                        
+
                                         # Show audio player and download button
                                         st.audio(audio, format="audio/mp3")
                                         st.download_button(
