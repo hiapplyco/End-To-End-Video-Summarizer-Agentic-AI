@@ -117,11 +117,16 @@ def initialize_agent():
 
 multimodal_Agent = initialize_agent()
 
+script_agent = initialize_agent() # Initialize a second agent for script generation
+
 # ------------------------------
 # Session state initialization
 # ------------------------------
 if 'analysis_result' not in st.session_state:
     st.session_state.analysis_result = None
+
+if 'audio_script' not in st.session_state: # New session state for audio script
+    st.session_state.audio_script = None
 
 if 'audio_generated' not in st.session_state:
     st.session_state.audio_generated = False
@@ -160,7 +165,7 @@ if video_file:
             st.warning("Please enter a question to analyze the video.")
         else:
             try:
-                with st.spinner("Analyzing video and generating BJJ feedback..."):
+                with st.spinner("Analyzing video and generating expert BJJ feedback..."):
                     progress_bar = st.progress(0)
                     progress_bar.progress(10, text="Uploading...")
                     processed_video = upload_file(video_path)
@@ -216,6 +221,7 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
                     st.session_state.analysis_result = response.content
                     st.session_state.audio_generated = False
                     st.session_state.show_audio_options = False
+                    st.session_state.audio_script = None # Reset audio script when new analysis is generated
 
             except Exception as error:
                 st.error(f"Analysis error: {error}")
@@ -266,8 +272,24 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
                 if st.button("Generate Audio Analysis"): # Clear CTA for audio generation
                     if elevenlabs_api_key:
                         try:
+                            with st.spinner("Preparing audio script..."): # New spinner for script generation
+                                script_prompt = f"""
+                                Convert the following Jiu-Jitsu technique analysis into a natural, enthusiastic, and encouraging monologue script as if spoken by a seasoned BJJ coach.
+
+                                Remove all headings, bullet points, timestamps or any special characters.  The script should be plain text and flow naturally when read aloud.  Imagine you are Professor Garcia, speaking directly to your student, providing feedback and motivation.
+
+                                Maintain all the technical insights and recommendations from the analysis, but phrase them in a conversational, easy-to-listen manner. Inject enthusiasm and a positive coaching tone.
+
+                                **Analysis to convert:**
+                                ```
+                                {st.session_state.analysis_result}
+                                ```
+                                """
+                                script_response = script_agent.run(script_prompt) # Use script_agent
+                                st.session_state.audio_script = script_response.content # Store the script
+
                             with st.spinner("Generating audio..."):
-                                clean_text = st.session_state.analysis_result.replace('#', '').replace('*', '')
+                                clean_text = st.session_state.audio_script # Use audio_script for TTS
                                 client = ElevenLabs(api_key=elevenlabs_api_key)
                                 # **Modified Audio Generation Code:**
                                 audio_generator = client.text_to_speech.convert(
@@ -295,7 +317,7 @@ Deliver your analysis with the authority of a legend, yet with the clarity and e
 
 else:
     st.write("""
-    Welcome! Studio 540 provides AI-powered analysis of your BJJ techniques.
+    Welcome! Studio 540 provides expert analysis of your BJJ techniques in seconds.
     Upload a video to get started.
     """)
     st.info("🥋 Upload a BJJ video above to receive expert AI analysis and personalized feedback.") # Info message as CTA
