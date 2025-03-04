@@ -14,7 +14,7 @@ import base64
 
 # Set page configuration as the first Streamlit command
 st.set_page_config(
-    page_title="Studio 540 - BJJ Video Analyzer",
+    page_title="Studio 540 - Technical BJJ Feedback in seconds",
     page_icon="🥋",
     layout="wide"
 )
